@@ -1,4 +1,14 @@
 export default async function handler(req, res) {
+  // CORS headers for preflight and actual requests
+  res.setHeader("Access-Control-Allow-Origin", "*"); // or specify your domain instead of "*"
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Handle preflight requests
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   if (req.method !== "POST") {
     return res.status(405).send("Method Not Allowed");
   }
@@ -15,10 +25,5 @@ export default async function handler(req, res) {
 
   console.log("Log entry:", logEntry);
 
-  // Persisting logs:
-  // 👉 Option A: Use Vercel's built-in logging (console only)
-  // 👉 Option B: Forward to a real database (e.g. PlanetScale, Supabase, Tinybird)
-  // 👉 Option C: Write to a third-party logging service (like Logtail, Loggly)
-
-  res.status(204).end(); // Success, no content
+  return res.status(204).end();
 }

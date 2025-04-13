@@ -19,6 +19,7 @@ def logger():
     data = request.get_json()
     url = data.get("url", "")
     timestamp = data.get("timestamp") or datetime.utcnow().isoformat()
+    logrec = data.get("logrec", 1)  # default to 1 if not provided
 
     print("📥 Log received:", data)
 
@@ -26,7 +27,7 @@ def logger():
     try:
         conn = psycopg2.connect(DATABASE_URL, sslmode='require')
         cur = conn.cursor()
-        cur.execute("INSERT INTO logs (url, time) VALUES (%s, %s)", (url, timestamp))
+        cur.execute("INSERT INTO logs (url, time, logrec) VALUES (%s, %s, %s)", (url, timestamp, logrec))
         conn.commit()
         cur.close()
         conn.close()
